@@ -24,6 +24,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 	TextField txtfSearchTerm;
 	Button btnSearch;
 	TextArea txtaResults;
+	
 
 	SearchTwitter(String title) {
 		setTitle(title);
@@ -80,7 +81,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent searchTwitterEvent) {
 		final int NUM_OF_TWEETS = 100;
 		boolean resultsPrinted = false;
-		while ((txtfSearchTerm.getText() != "") && (!resultsPrinted)){
+		while ((!txtfSearchTerm.getText().equals("")) && (!resultsPrinted)){
 
 			String searchText = txtfSearchTerm.getText().toUpperCase();
 			//txtaResults.setText(searchText + "SearchTwitterEvent: " + searchTwitterEvent + "\n");
