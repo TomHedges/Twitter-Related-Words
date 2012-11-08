@@ -21,6 +21,10 @@ import org.json.simple.JSONValue;
 
 public class SearchTwitter extends JFrame implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	TextField txtfSearchTerm;
 	Button btnSearch;
 	TextArea txtaResults;
