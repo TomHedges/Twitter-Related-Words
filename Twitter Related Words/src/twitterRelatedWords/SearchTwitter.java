@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.*;
 import org.json.simple.JSONArray;
@@ -21,6 +24,10 @@ import org.json.simple.JSONValue;
 
 public class SearchTwitter extends JFrame implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	TextField txtfSearchTerm;
 	Button btnSearch;
 	TextArea txtaResults;
@@ -76,7 +83,6 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 		return tweetsForParsing;
 	}
-
 	@Override
 	public void actionPerformed(ActionEvent searchTwitterEvent) {
 		final int NUM_OF_TWEETS = 100;
@@ -108,7 +114,8 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 			ArrayList<String> tweetWordList = new ArrayList<String>();
 			ArrayList<Integer> tweetWordCount = new ArrayList<Integer>();
-			String[] commonWords = {
+			final Set<String> commonWords = new HashSet<String>(Arrays.asList(new String[]	
+					{
 					".",
 					",",
 					"-",
@@ -159,7 +166,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 					"YOU",
 					"YOUR",
 					"YOU'RE",
-			};
+			}));
 
 			txtaResults.append(NUM_OF_TWEETS + " tweets collected.\nNow processing");
 
@@ -194,11 +201,8 @@ public class SearchTwitter extends JFrame implements ActionListener {
 								//System.out.println(commonWords[commonWordsLoop]);
 
 								boolean commonWordFound = false;
-								for (int commonWordsLoop = 0; commonWordsLoop<commonWords.length; commonWordsLoop++){
-									if (word.equals(commonWords[commonWordsLoop])) {
-										commonWordFound = true;
-									}
-								}
+								commonWordFound = commonWords.contains(word);
+								
 
 								if (!commonWordFound) {
 									//System.out.println(word);
