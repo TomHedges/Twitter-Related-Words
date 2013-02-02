@@ -1,6 +1,6 @@
 /**
  * @author Tom Hedges
- * 
+ *
  * SearchTwitter twitter for a term, and list the other most common words in results
  * 
  */
@@ -25,51 +25,51 @@ import java.util.Set;
 
 public class SearchTwitter extends JFrame implements ActionListener {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-	TextField txtfSearchTerm;
-	Button btnSearch;
-	TextArea txtaResults;
+	private final TextField txtfSearchTerm;
+	private final Button btnSearch;
+	private final TextArea txtaResults;
 	
 
-	SearchTwitter(String title) {
-		setTitle(title);
+	private SearchTwitter() {
+
+        setTitle("Search Twitter for related words");
 
 		Label lblSearchInstructions = new Label("Please enter your search term:");
 		txtfSearchTerm = new TextField(20);
-		txtaResults = new TextArea(10, 61);
+		txtaResults = new TextArea(30, 61);
 		btnSearch = new Button("Search Twitter");
 
 		this.add(lblSearchInstructions);
 		this.add(txtfSearchTerm);
-		this.add(btnSearch);
+
+        this.add(btnSearch);
 		this.add(txtaResults);
 		txtaResults.setFont(new Font("Courier",Font.PLAIN, 12));
 		btnSearch.addActionListener(this);
 
 		this.setResizable(true);
-
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
-
         this.setSize(465, 600);
 		this.setLocationRelativeTo(null);
 	}
 
 	public static void main(String[] args) {
-		SearchTwitter searchWindow = new SearchTwitter("Search Twitter for related words"); 
+		SearchTwitter searchWindow = new SearchTwitter();
 		searchWindow.setVisible(true); 
 		searchWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	public String getTweets(String urlTweetsSource) {
-		URL urlForTweets;
+	String getTweets(String urlTweetsSource) {
+
+        URL urlForTweets;
 		HttpURLConnection connectionTwitter;
 		BufferedReader readTweets;
 		String readTweetsLineByLine;
 		String tweetsForParsing = "";
-		try {
+
+        try {
 			urlForTweets = new URL(urlTweetsSource);
 			connectionTwitter = (HttpURLConnection) urlForTweets.openConnection();
 			connectionTwitter.setRequestMethod("GET");
@@ -87,12 +87,11 @@ public class SearchTwitter extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent searchTwitterEvent) {
 
-        final int NUM_OF_TWEETS = 100;
+        final int NUM_OF_TWEETS = 1000;
 		boolean resultsPrinted = false;
 		while ((!txtfSearchTerm.getText().equals("")) && (!resultsPrinted)){
 
 			String searchText = txtfSearchTerm.getText().toUpperCase();
-			//txtaResults.setText(searchText + "SearchTwitterEvent: " + searchTwitterEvent + "\n");
 
 			txtaResults.setText("Collecting tweets containing search term: " + searchText + "\n");
 
@@ -100,74 +99,34 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 			searchText = txtfSearchTerm.getText().toUpperCase();
 
-			//txtaResults.setText(txtaResults.getText() + tweetsForParsing + "\n");
-
-			//System.out.println(searchText);
-
-			//System.out.println("=======decode=======");
-
 			Object tweetObject = JSONValue.parse(tweetsForParsing);
 			JSONObject tweetResults=(JSONObject)tweetObject;
 
 			JSONArray tweets=(JSONArray)tweetResults.get("results");
 
-			//System.out.println("======field \"results\"==========");
-
-
 			ArrayList<String> tweetWordList = new ArrayList<String>();
 			ArrayList<Integer> tweetWordCount = new ArrayList<Integer>();
 			final Set<String> commonWords = new HashSet<String>(Arrays.asList(new String[]	
 					{
-					".",
-					",",
-					"-",
-					"!",
-					"?",
-					"'S",
-					"A",
-					"AM",
-					"AN",
-					"AND",
-					"AT",
-					"BE",
-					"BUT",
-					"BY",
-					"CAN",
-					"CAN'T",
+					".",",","-","!","?","'S",
+					"A","AM","AN","AND","AT",
+					"BE","BUT","BY",
+					"CAN","CAN'T",
 					"DO",
-					"FOR",
-					"FROM",
-					"GET",
-					"GETTING",
-					"GOT",
-					"GO",
+					"FOR","FROM",
+					"GET","GETTING","GOT","GO",
 					"HI",
-					"I",
-					"IF",
-					"IN",
-					"IS",
-					"IT",
-					"IT'S",
-					"I'M",
-					"MY",
-					"ME",
+					"I","IF","IN","IS","IT","IT'S","ITS",
+					"I'M","IM",
+                    "LOL",
+					"MY","MYE","ME",
 					"NO",
-					"OF",
-					"ON",
-					"OR",
-					"RT",
-					"THAT",
-					"THE",
-					"THIS",
-					"TO",
-					"TOO",
-					"WHAT",
-					"WHY",
-					"WHEN",
-					"WITH",
-					"YOU",
-					"YOUR",
-					"YOU'RE",
+					"OF","ON","OR",
+                    "QW",
+					"RT","ROFL","ROFLMAO",
+					"THAT","THE","THIS","TO","TOO",
+					"WHAT","WHY","WHEN","WITH",
+					"YOU","YOUR","YOU'RE",
 			}));
 
 			txtaResults.append(NUM_OF_TWEETS + " tweets collected.\nNow processing");
@@ -177,48 +136,29 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 				JSONObject singleTweetDetails = (JSONObject) tweetCounter;
 				String tweetText = (String) singleTweetDetails.get("text");
-				//System.out.println(tweetText);
 				tweetText = tweetText.toUpperCase() + " ";
-				//System.out.println(tweetText);
-
-				//System.out.println(searchText);
 				tweetText = tweetText.replace(searchText, "");
-				//System.out.println(tweetText);
 
 				if (tweetText.contains(" ")){
 					String word = "";
 					for (int tweetCharCounter = 0; tweetCharCounter < tweetText.length(); tweetCharCounter++ ){
-						//System.out.println("xx"+tweetCharCounter);
 						if (tweetText.charAt(tweetCharCounter) != ' ' && !word.equals(" ")) {
 							word = word + tweetText.charAt(tweetCharCounter);
-							//System.out.println("a" +word);
 						}
 						else {
 							if (!word.equals(" ") && !word.equals("")){
-								//System.out.println("b" + tweetCharCounter);
-								//System.out.println(word + " BUILT----------------------------------------------------");
-
-								////int commonWordsLoop = 0;
-								//System.out.println(commonWordsLoop);
-								//System.out.println(commonWords[commonWordsLoop]);
-
-								boolean commonWordFound = false;
-								commonWordFound = commonWords.contains(word);
-								
+								boolean commonWordFound = commonWords.contains(word);
 
 								if (!commonWordFound) {
-									//System.out.println(word);
 									boolean wordFound = false;
 									if (tweetWordList.size()==0){
 										tweetWordList.add(word);
-										//System.out.println(word + "added");
 										tweetWordCount.add(1);
 										wordFound = true;
 									}
 									int tweetWordListAdvancer = 0;
 									while (!wordFound && tweetWordListAdvancer<tweetWordList.size() && tweetWordList.size()>1){
 										if (word.equals(tweetWordList.get(tweetWordListAdvancer))){
-											//System.out.println(word);
 											wordFound = true;
 											tweetWordCount.set(tweetWordListAdvancer, tweetWordCount.get(tweetWordListAdvancer)+1);
 										}
@@ -226,7 +166,6 @@ public class SearchTwitter extends JFrame implements ActionListener {
 									}
 									if (!wordFound) {
 										tweetWordList.add(word);
-										//System.out.println(word + "added - " + commonWordsLoop + commonWords[commonWordsLoop]);
 										tweetWordCount.add(1);
 									}
 									//System.out.println(wordFound + " " + tweetWordListAdvancer + " " + tweetWordList.size());
@@ -240,48 +179,41 @@ public class SearchTwitter extends JFrame implements ActionListener {
 				}
 			}
 
-
-
-			//System.out.println("end list?" + tweetWordList.size());
-			//System.out.println("end count?" + tweetWordCount.size());
-
 			txtaResults.append("\nNow sorting " + tweetWordCount.size() + "results for display...");
 
-			int pos = 1;
+			int p = 1; //position
 
-			while (pos<tweetWordList.size()){
-				if (tweetWordCount.get(pos).compareTo(tweetWordCount.get(pos-1))>0){
-					int tempNumMem = tweetWordCount.get(pos-1);
-					tweetWordCount.set(pos-1,tweetWordCount.get(pos));
-					tweetWordCount.set(pos,tempNumMem);
-					String tempStrMem = tweetWordList.get(pos-1);
-					tweetWordList.set(pos-1,tweetWordList.get(pos));
-					tweetWordList.set(pos,tempStrMem);
-					pos = 1;
+			while (p<tweetWordList.size()){
+				if (tweetWordCount.get(p).compareTo(tweetWordCount.get(p - 1)) > 0){
+
+                    int n = tweetWordCount.get(p - 1);
+					tweetWordCount.set(p - 1, tweetWordCount.get(p));
+					tweetWordCount.set(p, n);
+					String s = tweetWordList.get(p - 1);
+					tweetWordList.set(p - 1, tweetWordList.get(p));
+					tweetWordList.set(p, s);
+					p = 1;
 				} else {
-					pos++;
+					p++;
 				}
 			}
+            String msg =
+            "Searched " + NUM_OF_TWEETS + " tweets for search term \"" + searchText + "\".\n" +
+            "Results contain " + tweetWordList.size() + " words.\n" +
+            "Results are:\n";
 
-			txtaResults.setText("Searched " + NUM_OF_TWEETS + " tweets for search term \"" + searchText + "\".\nResults contain " + tweetWordList.size() + " words.\nResults are:\n");
+			txtaResults.setText(msg);
 
 			int tweetWordListAdvancer = 0;
+
 			while (tweetWordListAdvancer<tweetWordList.size()){
 				//	System.out.println(tweetWordList.get(tweetWordListAdvancer) + " occurences=" + tweetWordCount.get(tweetWordListAdvancer));
 				String tempTextMem = String.format("%-25s%4d\n", tweetWordList.get(tweetWordListAdvancer), tweetWordCount.get(tweetWordListAdvancer));
 				txtaResults.append(tempTextMem);
 				tweetWordListAdvancer++;
 			}
-
-			//for (int tweetWordListAdvancer = 0; tweetWordListAdvancer==tweetWordList.size()-1; tweetWordListAdvancer++){
-			//	System.out.println(tweetWordList.get(tweetWordListAdvancer) + " occurences=" + tweetWordCount.get(tweetWordListAdvancer));
-			//} 
-
-
-
-			//txtaResults.setText(txtaResults.getText() + getTweets("http://search.twitter.com/search.json?q=" + txtfSearchTerm.getText()) + "\n");
 			resultsPrinted = true;
 		}
-//		resultsPrinted = false;
+
 	}
 }
