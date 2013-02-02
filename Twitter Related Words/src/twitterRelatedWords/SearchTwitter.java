@@ -28,26 +28,26 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private final TextField txtfSearchTerm;
-	private final Button btnSearch;
-	private final TextArea txtaResults;
+    private final TextArea txtaResults;
 	
 
 	private SearchTwitter() {
 
         setTitle("Search Twitter for related words");
 
-		Label lblSearchInstructions = new Label("Please enter your search term:");
-		txtfSearchTerm = new TextField(20);
-		txtaResults = new TextArea(30, 61);
-		btnSearch = new Button("Search Twitter");
-
+        Label lblSearchInstructions = new Label("Please enter your search term:");
 		this.add(lblSearchInstructions);
-		this.add(txtfSearchTerm);
 
+        txtfSearchTerm = new TextField(20);
+        this.add(txtfSearchTerm);
+
+        Button btnSearch = new Button("Search Twitter");
         this.add(btnSearch);
-		this.add(txtaResults);
+        btnSearch.addActionListener(this);
+
+        txtaResults = new TextArea(30, 61);
+        this.add(txtaResults);
 		txtaResults.setFont(new Font("Courier",Font.PLAIN, 12));
-		btnSearch.addActionListener(this);
 
 		this.setResizable(true);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -84,6 +84,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 		return tweetsForParsing;
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent searchTwitterEvent) {
 
@@ -95,18 +96,20 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 			txtaResults.setText("Collecting tweets containing search term: " + searchText + "\n");
 
-			String tweetsForParsing = getTweets("http://search.twitter.com/search.json?q=" + "\"" + searchText.replaceAll(" " , "%20") + "\"" + "&rpp=" + NUM_OF_TWEETS + "&geocode=54.673830,1.889648,500mi");
+			String tweetsForParsing =
+                    getTweets("http://search.twitter.com/search.json?q=" + "\"" +
+                    searchText.replaceAll(" " , "%20") + "\"" + "&rpp=" +
+                    NUM_OF_TWEETS + "&geocode=54.673830,1.889648,500mi");
 
 			searchText = txtfSearchTerm.getText().toUpperCase();
 
 			Object tweetObject = JSONValue.parse(tweetsForParsing);
 			JSONObject tweetResults=(JSONObject)tweetObject;
-
 			JSONArray tweets=(JSONArray)tweetResults.get("results");
 
-			ArrayList<String> tweetWordList = new ArrayList<String>();
-			ArrayList<Integer> tweetWordCount = new ArrayList<Integer>();
-			final Set<String> commonWords = new HashSet<String>(Arrays.asList(new String[]	
+			ArrayList <String> tweetWordList = new ArrayList <String>();
+			ArrayList <Integer> tweetWordCount = new ArrayList <Integer>();
+			final Set <String> commonWords = new HashSet <String>(Arrays.asList(new String[]
 					{
 					".",",","-","!","?","'S",
 					"A","AM","AN","AND","AT",
@@ -157,7 +160,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 										wordFound = true;
 									}
 									int tweetWordListAdvancer = 0;
-									while (!wordFound && tweetWordListAdvancer<tweetWordList.size() && tweetWordList.size()>1){
+									while (!wordFound && tweetWordListAdvancer < tweetWordList.size() && tweetWordList.size()>1){
 										if (word.equals(tweetWordList.get(tweetWordListAdvancer))){
 											wordFound = true;
 											tweetWordCount.set(tweetWordListAdvancer, tweetWordCount.get(tweetWordListAdvancer)+1);
@@ -183,7 +186,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 			int p = 1; //position
 
-			while (p<tweetWordList.size()){
+			while (p < tweetWordList.size()){
 				if (tweetWordCount.get(p).compareTo(tweetWordCount.get(p - 1)) > 0){
 
                     int n = tweetWordCount.get(p - 1);
@@ -206,7 +209,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 
 			int tweetWordListAdvancer = 0;
 
-			while (tweetWordListAdvancer<tweetWordList.size()){
+			while (tweetWordListAdvancer < tweetWordList.size()){
 				//	System.out.println(tweetWordList.get(tweetWordListAdvancer) + " occurences=" + tweetWordCount.get(tweetWordListAdvancer));
 				String tempTextMem = String.format("%-25s%4d\n", tweetWordList.get(tweetWordListAdvancer), tweetWordCount.get(tweetWordListAdvancer));
 				txtaResults.append(tempTextMem);
