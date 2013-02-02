@@ -6,8 +6,14 @@
  */
 package twitterRelatedWords;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -16,11 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.swing.*;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 public class SearchTwitter extends JFrame implements ActionListener {
 
@@ -36,7 +37,7 @@ public class SearchTwitter extends JFrame implements ActionListener {
 	SearchTwitter(String title) {
 		setTitle(title);
 
-		Label lblSearchInstructions = new Label("Please enter your seach term:");
+		Label lblSearchInstructions = new Label("Please enter your search term:");
 		txtfSearchTerm = new TextField(20);
 		txtaResults = new TextArea(10, 61);
 		btnSearch = new Button("Search Twitter");
@@ -48,11 +49,11 @@ public class SearchTwitter extends JFrame implements ActionListener {
 		txtaResults.setFont(new Font("Courier",Font.PLAIN, 12));
 		btnSearch.addActionListener(this);
 
-		this.setResizable(false);
+		this.setResizable(true);
 
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		this.setSize(465, 300);
+        this.setSize(465, 600);
 		this.setLocationRelativeTo(null);
 	}
 
@@ -85,7 +86,8 @@ public class SearchTwitter extends JFrame implements ActionListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent searchTwitterEvent) {
-		final int NUM_OF_TWEETS = 100;
+
+        final int NUM_OF_TWEETS = 100;
 		boolean resultsPrinted = false;
 		while ((!txtfSearchTerm.getText().equals("")) && (!resultsPrinted)){
 
@@ -280,6 +282,6 @@ public class SearchTwitter extends JFrame implements ActionListener {
 			//txtaResults.setText(txtaResults.getText() + getTweets("http://search.twitter.com/search.json?q=" + txtfSearchTerm.getText()) + "\n");
 			resultsPrinted = true;
 		}
-		resultsPrinted = false;
+//		resultsPrinted = false;
 	}
 }
